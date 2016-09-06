@@ -1,0 +1,9 @@
+body {
+    image-rendering: pixelated;
+    background-color: #000000;
+}
+
+canvas {
+    background-color: white;
+    border: 1px solid #000000;
+}
