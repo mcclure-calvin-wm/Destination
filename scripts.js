@@ -21,7 +21,6 @@ function render (){
 //runs once, sets up game
 function init (){
 
-
     setInterval(update, 1000 / 60);
     requestAnimationFrame(render);
 }
