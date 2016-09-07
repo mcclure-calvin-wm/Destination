@@ -6,12 +6,30 @@ var context = canvas.getContext("2d");
 var snowman;
 
 // sets canvas dimensions
-// //canvas.style.width = window.innerWidth - 32 + "px";
-// //canvas.style.height = window.innerHeight - 32 + "px";
+canvas.style.width = window.innerWidth - 32 + "px";
+canvas.style.height = window.innerHeight - 32 + "px";
+
+//logs all the key presses
+var keys = [];
+
+// Adds event listener for key down and up
+window.addEventListener('keydown', function(e) {
+    keys[e.keyCode] = true;
+});
+window.addEventListener('keyup', function(e) {
+    keys[e.keyCode] = false;
+});
+
+// Adds event listener for key presses
+// // window.addEventListener('keypress', function(e) {
+// //     keys[e.keyCode] = true;
+// // });
+
+
 
 // updates values and code
 function update (){
-
+    snowman.update();
 }
 
 // draws code
@@ -40,8 +58,8 @@ function init (){
 }
 
 // creates a reusable constructor function
-function Player (x, y, width, height, sprite){
-    // uses parameters to set css values for the Player
+function Entity (x, y, width, height, sprite){
+    // uses parameters to set css values for the Entity
     this.x = x;
     this.y = y;
     this.width = width;
@@ -52,6 +70,24 @@ function Player (x, y, width, height, sprite){
     this.render = function () {
         context.drawImage(this.sprite, this.x, this.y, this.width, this.height);
     }
+}
+
+// creates a constructor for player type Entities
+function Player (x, y, width, height, sprite){
+    // creates a new Entity called entity
+    var entity = new Entity(x, y, width, height, sprite);
+
+    // creates an update method
+    entity.update = function (){
+
+        // adds movement to entity
+        //A - When A is pressed the entity loses 5 x value
+        if(keys[65]) entity.x-= 5;
+        //D - When D is pressed the entity gains 5 x value
+        if(keys[68]) entity.x+= 5;
+    };
+
+    return entity;
 }
 
 // runs the function that starts
