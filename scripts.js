@@ -52,7 +52,7 @@ function init (){
     snowmanImg.src = "pics/snowman.png";
 
     // uses Player constructor to make new snowman
-    snowman = new Player(100, canvas.height - 100, 200, 125, snowmanImg);
+    snowman = new Player(100, canvas.height - 200, 200, 200, snowmanImg);
 
     // creates a refresh rate for the canvas
     setInterval(update, 1000 / 60);
@@ -77,35 +77,41 @@ function Entity (x, y, width, height, sprite){
 // creates a constructor for player type Entities
 function Player (x, y, width, height, sprite){
     // creates a new Entity called entity
-    var entity = new Entity(x, y, width, height, sprite);
-
+    var e = new Entity(x, y, width, height, sprite);
+    e.waypointX = x;
+    e.waypointY = y;
     // creates an update method
-    entity.update = function (){
+    e.update = function (){
 
         // adds movement to entity
         //A - When A is pressed the entity loses 5 x value
         if(keys[65]) {
-            entity.x -= 25;
+            e.waypointX -= 25;
             keys[65] = false;
         }
         //D - When D is pressed the entity gains 5 x value
         if(keys[68]) {
-            entity.x += 25;
+            e.waypointX += 25;
             keys[68] = false;
         }
         //W - When W is pressed the entity loses 5 y value
         if(keys[87]) {
-            entity.y -= 25;
+            e.waypointY -= 25;
             keys[87] = false;
         }
         //S - When S is pressed the entity gains 5 y value
         if(keys[83]) {
-            entity.y += 25;
+            e.waypointY += 25;
             keys[83] = false;
         }
+
+        if(e.x < e.waypointX) e.x += 5;
+        if(e.x > e.waypointX) e.x -= 5;
+        if(e.y < e.waypointY) e.y += 5;
+        if(e.y > e.waypointY) e.y -= 5;
     };
 
-    return entity;
+    return e;
 }
 
 // runs the function that starts
