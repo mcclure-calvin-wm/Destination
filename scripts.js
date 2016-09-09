@@ -9,7 +9,7 @@ var rambo;
 canvas.style.width = window.innerWidth - 32 + "px";
 canvas.style.height = window.innerHeight - 32 + "px";
 
-//logs all the key presses
+//logs all the key presses.
 var keys = [];
 
 // Adds event listener for key down and up
