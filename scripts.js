@@ -3,7 +3,7 @@ var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
 // Implicitly declaring variables
-var snowman;
+var rambo;
 
 // sets canvas dimensions
 canvas.style.width = window.innerWidth - 32 + "px";
@@ -22,23 +22,18 @@ window.addEventListener('keyup', function(e) {
     keys[e.keyCode] = null;
 });
 
-// Adds event listener for key presses
-// window.addEventListener('keypress', function(e) {
-//         keys[e.keyCode] = true;
-// });
-
 
 
 // updates values and code
 function update (){
-    snowman.update();
+    rambo.update();
 }
 
 // draws code
 function render (){
     //clears the canvas
     context.clearRect(0,0,800,480);
-    snowman.render();
+    rambo.render();
 
     requestAnimationFrame(render);
 }
@@ -48,11 +43,11 @@ function init (){
 
     // creates a variable that holds all the img
     // information for the snowman sprite
-    var snowmanImg = new Image();
-    snowmanImg.src = "pics/snowman.png";
+    var ramboImg = new Image();
+    ramboImg.src = "pics/rambo.png";
 
     // uses Player constructor to make new snowman
-    snowman = new Player(100, canvas.height - 200, 200, 200, snowmanImg);
+    rambo = new Player(100, canvas.height - 200, 100, 100, ramboImg);
 
     // creates a refresh rate for the canvas
     setInterval(update, 1000 / 60);
@@ -68,9 +63,19 @@ function Entity (x, y, width, height, sprite){
     this.height = height;
     this.sprite = sprite;
 
+    this.direction = 0;
+    this.animation = {
+        index: 0,
+        frame: 0,
+        max: 10
+    };
+    this.moving = false;
+
+    this.speed = 2;
+
     // function that creates the img on canvas
     this.render = function () {
-        context.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+        context.drawImage(this.sprite, this.animation.index * 150, this.direction * 117, 150, 117, this.x, this.y, this.width, this.height);
     }
 }
 
@@ -80,35 +85,64 @@ function Player (x, y, width, height, sprite){
     var e = new Entity(x, y, width, height, sprite);
     e.waypointX = x;
     e.waypointY = y;
+    e.speed = 1;
     // creates an update method
     e.update = function (){
 
+        if(e.moving) {
+            if (e.animation.frame >= e.animation.max) {
+                e.animation.index++;
+                if (e.animation.index > 6) e.animation.index = 0;
+                e.animation.frame = 0;
+            } else e.animation.frame++;
+        } else e.animation.index = 0;
+
         // adds movement to entity
         //A - When A is pressed the entity loses 5 x value
-        if(keys[65]) {
-            e.waypointX -= 25;
-            keys[65] = false;
-        }
-        //D - When D is pressed the entity gains 5 x value
-        if(keys[68]) {
-            e.waypointX += 25;
-            keys[68] = false;
-        }
-        //W - When W is pressed the entity loses 5 y value
-        if(keys[87]) {
-            e.waypointY -= 25;
-            keys[87] = false;
-        }
-        //S - When S is pressed the entity gains 5 y value
-        if(keys[83]) {
-            e.waypointY += 25;
-            keys[83] = false;
+        var step = 32;
+        if(e.moving == false) {
+            if (keys[65]) {
+                e.waypointX -= step;
+                keys[65] = false;
+            }
+            //D - When D is pressed the entity gains 5 x value
+            if (keys[68]) {
+                e.waypointX += step;
+                keys[68] = false;
+            }
+            //W - When W is pressed the entity loses 5 y value
+            if (keys[87]) {
+                e.waypointY -= step;
+                keys[87] = false;
+            }
+            //S - When S is pressed the entity gains 5 y value
+            if (keys[83]) {
+                e.waypointY += step;
+                keys[83] = false;
+            }
         }
 
-        if(e.x < e.waypointX) e.x += 5;
-        if(e.x > e.waypointX) e.x -= 5;
-        if(e.y < e.waypointY) e.y += 5;
-        if(e.y > e.waypointY) e.y -= 5;
+        e.moving = false;
+        if(e.x < e.waypointX) {
+            e.x += e.speed;
+            e.direction = 3;
+            e.moving = true;
+        }
+        if(e.x > e.waypointX) {
+            e.x -= e.speed;
+            e.direction = 2;
+            e.moving = true;
+        }
+        if(e.y < e.waypointY) {
+            e.y += e.speed;
+            e.direction = 0;
+            e.moving = true;
+        }
+        if(e.y > e.waypointY) {
+            e.y -= e.speed;
+            e.direction = 1;
+            e.moving = true;
+        }
     };
 
     return e;
